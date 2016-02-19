@@ -71,7 +71,7 @@ class Church
         $this->user = $user;
     }
 
-    public function getAllChurch($id = null)
+    public function getAllChurch($id = null, $input = null)
     {
 
         if (!is_null($id)) {
@@ -84,7 +84,7 @@ class Church
             'hasMorePages' => false
         ];
 
-        $dados = $this->churchRepository->all();
+        $dados = $this->churchRepository->all($input);
 
         if ($dados) {
 

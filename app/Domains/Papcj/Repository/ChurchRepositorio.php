@@ -79,11 +79,16 @@ class ChurchRepositorio
 
     }
 
-    public function all()
+    public function all(array $input)
     {
-        return $this->model
-        ->orderBy('created_at', 'DESC')
-        ->paginate(10);
+        $dados = $this->model
+                      ->orderBy('created_at', 'DESC');
+
+        if (isset($input['search'])) {
+            $dados = $dados->where('nome', 'like', '%' . $input['search'] . '%');
+        };
+
+        return $dados->paginate(10);
     }
 
     public function find($id)

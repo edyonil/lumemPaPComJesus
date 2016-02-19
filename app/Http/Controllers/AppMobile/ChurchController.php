@@ -17,11 +17,14 @@ class ChurchController extends BaseController
 
     }
 
-    public function getIndex($idUser = null, $id = null)
+    public function getIndex($idUser = null, $id = null, Request $request)
     {
+
+        $input = $request->all();
+
         if ($id == null) {
 
-            $dados = $this->church->getAllChurch($idUser);
+            $dados = $this->church->getAllChurch($idUser, $input);
 
         } else {
 
