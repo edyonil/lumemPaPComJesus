@@ -46,7 +46,7 @@ class LoginController
         if ($validacao->fails()) {
 
             $message['result'] = $validacao->errors()->first();
-            return response()->json($message, 400);
+            return response()->json(['message' => $message], 400);
 
         };
 
@@ -54,11 +54,11 @@ class LoginController
 
         if ($user) {
             $message['result'] = $user;
-            return response()->json($message, 200);
+            return response()->json(['message' => $message], 200);
         }
 
         $message['result'] = 'Email ou senha inválido!';
-        return response()->json($message, 400);
+        return response()->json(['message' => $message], 400);
 
 
     }

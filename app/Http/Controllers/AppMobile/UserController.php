@@ -36,7 +36,7 @@ class UserController extends Controller
 
             $message['result'] = $validacao->errors()->first();
 
-            return response()->json($message, 422);
+            return response()->json(['message' => $message], 400);
 
         };
 
@@ -56,7 +56,7 @@ class UserController extends Controller
 
         }
 
-        return response()->json($message, $codigo);
+        return response()->json(['message' => $message], $codigo);
 
     }
 
@@ -71,7 +71,8 @@ class UserController extends Controller
 
         if ($validacao->fails()) {
 
-            return response()->json($message['result'] = $validacao->errors()->first(), 400);
+            $message['result'] = $validacao->errors()->first();
+            return response()->json(['message' => 'result'], 400);
 
         };
 
@@ -91,7 +92,7 @@ class UserController extends Controller
 
         }
 
-        return response()->json($message, $codigo);
+        return response()->json(['message' => $message], $codigo);
 
     }
 
