@@ -11,4 +11,3 @@ Class Church extends Eloquent{
     protected $collection = 'igreja';
 
 }
-

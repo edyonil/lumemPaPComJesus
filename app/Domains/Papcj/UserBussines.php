@@ -10,7 +10,6 @@ namespace App\Domains\Papcj;
 
 
 use App\Domains\Papcj\Models\User;
-use Illuminate\Support\Facades\Hash;
 
 class UserBussines
 {
@@ -60,7 +59,6 @@ class UserBussines
         $this->user->nome = $input['nome'];
         $this->user->sobrenome = $input['sobrenome'];
         $this->user->email = $input['email'];
-        $this->user->tipo = $input['tipo'];
 
         $this->user->save();
 

@@ -18,16 +18,6 @@ $app->get('/', function () use ($app) {
 
 $app->get('visit/{idUser}/{idChurch}', function($idUser, $idChurch) {
 
-    $dados = new \App\Domains\Papcj\VisitOrFrequent(true);
-
-    $message = $dados->userVisit($idUser, $idChurch);
-
-    return response()->json(['message' => $message]);
-
-});
-
-$app->get('visit/{idUser}/{idChurch}', function($idUser, $idChurch) {
-
     $dados = new \App\Domains\Papcj\Visit();
 
     $message = $dados->userVisit($idUser, $idChurch);
@@ -37,8 +27,6 @@ $app->get('visit/{idUser}/{idChurch}', function($idUser, $idChurch) {
 });
 
 $app->get('frequent/{idUser}/{idChurch}', function($idUser, $idChurch, Illuminate\Http\Request $request) {
-
-    //dd(\App\Domains\Papcj\Models\Church::find('56a046ddbffebc670e8b4568'));
 
     $force = 0;
 
@@ -98,3 +86,76 @@ $app->get('/church', 'AppMobile\ChurchController@getIndex');
 $app->get('/church/{idUser}', 'AppMobile\ChurchController@getIndex');
 $app->post('/church/{idUser}', 'AppMobile\ChurchController@postIndex');
 $app->get('/church/{idUser}/{id}', 'AppMobile\ChurchController@getIndex');
+
+/*$app->get('/geolocation', function() {
+
+    $geolocation = new \App\Domains\Papcj\Models\Geolocation();
+
+//    dd($geolocation->all());
+
+    $geolocation->where('id', '!=', 1)->delete();
+
+    //dd($geolocation->find('536b0a143004b15885c91a38'));
+
+
+    $arrayData = [
+        'loc' => [
+            '$near' => [
+                'geometry' => [
+                    'type' => 'Point',
+                    'coordinates' => [-73.965355,40.782865]
+                ],
+                '$maxDistance' => 20000
+            ],
+        ],
+    ];
+
+    $arrayData = [
+        'loc' => [
+            '$nearSphere' => [
+                '$geometry' => [
+                    'type' => 'Point',
+                    'coordinates' => [-73.965355,40.782865]
+                ],
+                '$maxDistance' => 100000
+            ],
+        ],
+    ];
+
+
+
+    $dados = $geolocation->whereRaw($arrayData)->get();
+
+    //dd($dados);
+
+    foreach($dados as $d) {
+        var_dump($d);
+    }
+
+
+    //{ location: { $nearSphere: { $geometry: { type: "Point", coordinates: [ -73.93414657, 40.82302903 ] }, $maxDistance: 5 * METERS_PER_MILE } } }
+
+
+    $geolocation->name = "Ediaimo Sousa Borges";
+
+    $loc = new stdClass();
+    $loc->type = 'Point';
+    $loc->coordinates = [-20.778889, 20.639722];
+
+    $geolocation->loc = $loc;
+
+    $geolocation->save();
+
+    dd($geolocation);
+
+});*/
+
+$app->get('config-app', function() {
+
+
+    //dd(\App\Domains\Papcj\Models\User::get());
+
+    \App\Domains\Papcj\Models\Church::where('id', '!=', '1')->delete();
+
+});
+

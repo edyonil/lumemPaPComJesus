@@ -34,11 +34,16 @@ class ChurchRepositorio
         $this->model->estado_nome = $input['estado_nome'];
         $this->model->estado_sigla = $input['estado_sigla'];
         $this->model->pais = $input['pais'];
-        $this->model->latitude = $input['latitude'];
-        $this->model->longitude = $input['longitude'];
+        $this->model->loc = [
+            'type' => 'Point',
+            'coordinates' => [
+                (float)$input['longitude'],
+                (float)$input['latitude']
+            ]
+        ];
         $this->model->foto = (isset($input['foto'])) ? $input['foto'] : null;
         $this->model->cod_usuario = $input['cod_usuario'];
-        $this->model->frequentantes = [];
+        $this->model->frequentadores = [];
         $this->model->visitantes = [];
 
         $this->model->save();
@@ -62,8 +67,13 @@ class ChurchRepositorio
         $this->model->estado_nome = $input['estado_nome'];
         $this->model->estado_sigla = $input['estado_sigla'];
         $this->model->pais = $input['pais'];
-        $this->model->latitude = $input['latitude'];
-        $this->model->longitude = $input['longitude'];
+        $this->model->loc = [
+            'type' => 'Point',
+            'coordinates' => [
+                (float)$input['longitude'],
+                (float)$input['latitude'],
+            ]
+        ];
         $this->model->foto = (isset($input['foto'])) ? $input['foto'] : null;
         $this->model->cod_usuario = $input['cod_usuario'];
 
@@ -81,14 +91,36 @@ class ChurchRepositorio
 
     public function all(array $input)
     {
-        $dados = $this->model
-                      ->orderBy('created_at', 'DESC');
+        $dados = $this->model;/*
+                      ->orderBy('created_at', 'DESC');*/
+
+        if(isset($input['longitude']) && isset($input['latitude'])) {
+            $arrayData = [
+                'loc' => [
+                    '$nearSphere' => [
+                        '$geometry' => [
+                            'type' => "Point",
+                            'coordinates' => [(float)$input['longitude'], (float)$input['latitude']]
+                        ],
+                        '$maxDistance' => 300000
+                    ],
+                ],
+            ];
+
+            $dados = $dados->whereRaw($arrayData);
+        }
 
         if (isset($input['search'])) {
             $dados = $dados->where('nome', 'like', '%' . $input['search'] . '%');
         };
 
-        return $dados->paginate(10);
+        if (isset($input['cidade'])) {
+            $dados = $dados->where('cidade', '=', $input['cidade']);
+        };
+
+        return $dados->skip($input['skip'])
+                     ->take($input['take'])
+                     ->get();
     }
 
     public function find($id)

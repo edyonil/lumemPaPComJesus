@@ -10,7 +10,6 @@ namespace App\Http\Controllers\AppMobile;
 
 
 use App\Domains\Papcj\UserBussines;
-use App\User;
 use Laravel\Lumen\Routing\Controller;
 use Illuminate\Http\Request;
 
@@ -113,7 +112,6 @@ class UserController extends Controller
         $rules = [
             'nome' => ['required'],
             'sobrenome' => ['required'],
-            'tipo' => ['required'],
             'email' => ['required', 'email', $unique]
         ];
 
@@ -126,6 +124,7 @@ class UserController extends Controller
         if ($update == false) {
 
             $rules['password'] = ['required_if:tipo,email', 'confirmed'];
+            $rules['tipo'] = ['required'];
 
         };
 
