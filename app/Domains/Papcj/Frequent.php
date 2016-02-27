@@ -14,6 +14,14 @@ use App\Domains\Papcj\Repository\ChurchRepositorio;
 class Frequent
 {
 
+    /**
+     * Método responsável em marca a igreja que o usuário frequenta
+     *
+     * @param $idUser
+     * @param $idChurch
+     * @param int $force
+     * @return bool
+     */
     public function userFrequent($idUser, $idChurch, $force = 0)
     {
 
