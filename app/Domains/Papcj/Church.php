@@ -9,6 +9,7 @@
 namespace App\Domains\Papcj;
 
 use App\Domains\Papcj\Models\Church as ChurchModel;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
 class Church
@@ -23,6 +24,12 @@ class Church
     protected $latitude;
 
     protected $limit = 10;
+
+    protected $distanceByRegister = [];
+
+    protected $keyGoogle = "AIzaSyD8EZXgcTIHvvp7wtR-hTD9y0HjujzyUgY";
+
+    protected $url = "http://maps.google.com/maps/api/distancematrix/json?";
 
 
     public function __construct()
@@ -141,7 +148,7 @@ class Church
 
         $itens = [
             'result' => [],
-            'hasMorePages' => false
+            'hasMorePages' => true
         ];
 
         $input['skip'] = $this->calulatePages();
@@ -157,7 +164,7 @@ class Church
 
         $dados = $this->churchRepository->all($input);
 
-        if (!$dados) {
+        if (count($dados) == 0) {
             return  [
                 'result' => [],
                 'hasMorePages' => false
@@ -169,11 +176,13 @@ class Church
             $this->setLatitude($input['latitude']);
         }
 
+        $this->googleDistanceMatrix($dados);
+
         if ($dados) {
 
-            foreach($dados as $d) {
+            foreach($dados as $key => $d) {
 
-                $itens['result'][] = self::names($d);
+                $itens['result'][] = self::names($d, $key);
 
             }
 
@@ -198,7 +207,7 @@ class Church
 
     }
 
-    protected function names(ChurchModel $item)
+    protected function names(ChurchModel $item, $key = 0)
     {
 
 
@@ -223,7 +232,7 @@ class Church
         $registro->frequenta = self::userIsChurch($item->frequentadores);
         $registro->visitantes = $item->visitantes;
         $registro->frequentadores = $item->frequentadores;
-        $registro->distancia = $this->distance($item->loc['coordinates'][0], $item->loc['coordinates'][1]);
+        $registro->distancia = count($this->distanceByRegister) > 0 ? $this->distanceByRegister[$key] : null;
 
         return $registro;
 
@@ -250,37 +259,66 @@ class Church
 
     }
 
-    protected function distance($lat2, $lon2, $unit = "K")
+    protected function distance($lat2, $lon2)
     {
 
         if (!$this->getLatitude()) {
-
-            return 0;
-
+            return null;
         }
 
-        $lat1 = $this->getLatitude();
-        $lon1 = $this->getLongitude();
+        $lat1 = deg2rad($this->getLatitude());
+        $lat2 = deg2rad($lat2);
+        $lon1 = deg2rad($this->getLongitude());
+        $lon2 = deg2rad($lon2);
 
-        $theta = $lon1 - $lon2;
-        $dist = sin(deg2rad($lat1)) * sin(deg2rad($lat2)) +  cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($theta));
-        $dist = acos($dist);
-        $dist = rad2deg($dist);
-        $miles = $dist * 60 * 1.1515;
-        $unit = strtoupper($unit);
+        $latD = $lat2 - $lat1;
+        $lonD = $lon2 - $lon1;
 
-        if ($unit == "K") {
-            return ($miles * 1.609344);
-        } else if ($unit == "N") {
-            return ($miles * 0.8684);
-        } else {
-            return $miles;
-        }
+        $dist = 2 * asin(sqrt(pow(sin($latD / 2), 2) +
+                cos($lat1) * cos($lat2) * pow(sin($lonD / 2), 2)));
+        $dist = $dist * 6371;
+        //return $dist;
+        return number_format($dist, 2, ',', '');
     }
 
     protected function calulatePages($page = 1)
     {
         return ($page * $this->getLimit() - $this->getLimit());
+
+    }
+
+    protected function googleDistanceMatrix(Collection $dados)
+    {
+
+        $origens = $this->getLatitude() .",".$this->getLongitude();
+
+        $destinations = "";
+
+        $total = count($dados);
+
+        foreach($dados as $key => $item) {
+
+            $destinations .= $item->loc['coordinates'][1] . "," .$item->loc['coordinates'][0];
+
+            if ($key+1 < $total ) {
+                $destinations .= "|";
+            }
+        }
+
+        $url = "https://maps.google.com/maps/api/distancematrix/json?origins={$origens}&destinations={$destinations}&key={$this->keyGoogle}&sensor=true";
+
+        $dadosGoogle = json_decode(file_get_contents($url));
+
+        //dd($dadosGoogle);
+
+        if ($dadosGoogle->status == "OK") {
+
+            foreach($dadosGoogle->rows[0]->elements as $elemento)
+            {
+                $this->distanceByRegister[] = $elemento->distance->text;
+            }
+
+        }
 
     }
 

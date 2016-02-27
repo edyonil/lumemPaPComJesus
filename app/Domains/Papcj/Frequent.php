@@ -21,6 +21,10 @@ class Frequent
 
         $user =  $modelUser->find($idUser);
 
+        if (is_null($user)) {
+            return false;
+        };
+
         if ($this->isFrequent($user)) {
 
             return $this->saveFrequent($user, $idChurch);
