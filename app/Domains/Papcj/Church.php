@@ -290,6 +290,10 @@ class Church
     protected function googleDistanceMatrix(Collection $dados)
     {
 
+        if (is_null($this->getLatitude())) {
+            return false;
+        }
+
         $origens = $this->getLatitude() .",".$this->getLongitude();
 
         $destinations = "";
@@ -307,9 +311,9 @@ class Church
 
         $url = "https://maps.google.com/maps/api/distancematrix/json?origins={$origens}&destinations={$destinations}&key={$this->keyGoogle}&sensor=true";
 
+
         $dadosGoogle = json_decode(file_get_contents($url));
 
-        //dd($dadosGoogle);
 
         if ($dadosGoogle->status == "OK") {
 

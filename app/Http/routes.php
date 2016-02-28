@@ -152,10 +152,9 @@ $app->get('/church/{idUser}/{id}', 'AppMobile\ChurchController@getIndex');
 
 $app->get('config-app', function() {
 
+    \App\Domains\Papcj\Models\Church::where('id', '!=', 1)->delete();
 
-    //dd(\App\Domains\Papcj\Models\User::get());
-
-    \App\Domains\Papcj\Models\Church::where('id', '!=', '1')->delete();
+    \App\Domains\Papcj\Models\User::where('id', '!=', 1)->delete();
 
 });
 
