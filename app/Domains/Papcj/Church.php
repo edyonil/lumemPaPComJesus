@@ -50,9 +50,7 @@ class Church
 
         if ($request->hasFile('image')) {
 
-            $file = $request->file('image');
-
-            $file->move("foto/", $input['foto']);
+            $this->imageManipulationSync($request);
         }
 
         $input['cod_usuario'] = $idUser;
@@ -324,6 +322,27 @@ class Church
 
         }
 
+    }
+
+    protected function imageManipulationSync(Request $request)
+    {
+        $file = $request->file('image');
+
+        $nomeFoto = $request->get('foto');
+
+        $file->move("foto/real/", $nomeFoto);
+
+        $urlFilePath = 'foto/real/'. $nomeFoto;
+
+        $thumbnail = \Image::open($urlFilePath)
+            ->thumbnail(new \Imagine\Image\Box(90,70));
+
+        $thumbnail->save('foto/thumbnail/'. $nomeFoto);
+
+        $thumbnail = \Image::open($urlFilePath)
+            ->thumbnail(new \Imagine\Image\Box(400,300));
+
+        $thumbnail->save('foto/medium/'. $nomeFoto);
     }
 
 

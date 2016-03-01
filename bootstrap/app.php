@@ -26,12 +26,16 @@ $app = new Laravel\Lumen\Application(
 
 
 $app->register('Jenssegers\Mongodb\MongodbServiceProvider');
+$app->register('Folklore\Image\ImageServiceProvider');
+class_alias('Folklore\Image\Facades\Image','Image');
 
 $app->withEloquent();
 
 $app->withFacades();
 
 $app->configure('database');
+$app->configure('image');
+
 
 
 

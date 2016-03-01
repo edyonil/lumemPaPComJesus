@@ -10,7 +10,8 @@
         "vlucas/phpdotenv": "~2.2",
         "jenssegers/mongodb": "~2.2",
         "palanik/lumen-cors": "dev-master",
-        "vluzrmos/lumen-cors": "2.1.*"
+        "vluzrmos/lumen-cors": "2.1.*",
+        "ktquez/lumen-image": "~1.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
