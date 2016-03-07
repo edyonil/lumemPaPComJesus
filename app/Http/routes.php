@@ -49,12 +49,12 @@ $app->get('frequent/{idUser}/{idChurch}', function($idUser, $idChurch, Illuminat
     return response()->json(['message' => ['result' => $message]], $codeStatus);
 
 });
-
-/*$app->get('user', function() {
+/*
+$app->get('user', function() {
 
     $user = new \App\Domains\Papcj\Models\User();
 
-    dd($user->find('56a5201bbffebc8c048b456b'));
+    dd($user->all());
 
 });*/
 
@@ -62,8 +62,6 @@ $app->get('frequent/{idUser}/{idChurch}', function($idUser, $idChurch, Illuminat
 $app->get('/my-church/{id}', function($id) {
 
     $usuario = App\Domains\Papcj\Models\User::find($id);
-    //$usuario = App\Domains\Papcj\Models\User::orderBy('created_at', 'DESC')->first();
-    //dd($usuario);
 
     $igreja = new \App\Domains\Papcj\Church();
 
@@ -81,6 +79,14 @@ $app->post('/login','AppMobile\LoginController@postIndex');
 
 $app->post('/user','AppMobile\UserController@postIndex');
 $app->put('/user/{id}','AppMobile\UserController@putIndex');
+
+$app->get('user/{id}', function($id) {
+
+    $user = new \App\Domains\Papcj\UserBussines();
+
+    return response()->json($user->getUser($id));
+
+});
 
 $app->get('/church', 'AppMobile\ChurchController@getIndex');
 $app->get('/church/{idUser}', 'AppMobile\ChurchController@getIndex');

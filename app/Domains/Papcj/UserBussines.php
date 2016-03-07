@@ -81,15 +81,24 @@ class UserBussines
 
     }
 
+    public function getUser($id)
+    {
+        $user = $this->user->find($id);
+
+        return $this->resolveNames($user);
+
+    }
+
     private function resolveNames(User $user)
     {
-
         $newData = new \stdClass();
-        $newData->id = $user->id;
+        $newData->id = $user->_id;
         $newData->nome = $user->nome;
         $newData->sobrenome = $user->sobrenome;
         $newData->email = $user->email;
         $newData->tipo = $user->tipo;
+        $newData->igrejasVisitadas = isset($user->igreja_visita) ? $user->igreja_visita : null;
+        $newData->igreja = isset($user->igreja_frequenta) ? $user->igreja_frequenta : null ;
 
         return $newData;
 

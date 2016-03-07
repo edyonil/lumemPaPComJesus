@@ -12,26 +12,57 @@ use App\Domains\Papcj\Models\Church as ChurchModel;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
+/**
+ * Class Church
+ * @package App\Domains\Papcj
+ */
 class Church
 {
 
+    /**
+     * @var Repository\ChurchRepositorio
+     */
     protected $churchRepository;
 
+    /**
+     * @var
+     */
     protected $user;
 
+    /**
+     * @var
+     */
     protected $longitude;
 
+    /**
+     * @var
+     */
     protected $latitude;
 
+    /**
+     * @var int
+     */
     protected $limit = 10;
 
+    /**
+     * @var array
+     */
     protected $distanceByRegister = [];
 
+    /**
+     * @var string
+     */
     protected $keyGoogle = "AIzaSyD8EZXgcTIHvvp7wtR-hTD9y0HjujzyUgY";
 
+    /**
+     * @var string
+     */
     protected $url = "http://maps.google.com/maps/api/distancematrix/json?";
 
 
+    /**
+     * Church constructor.
+     */
     public function __construct()
     {
         $this->churchRepository = new Repository\ChurchRepositorio();
@@ -61,6 +92,11 @@ class Church
 
     }
 
+    /**
+     * @param $id
+     * @param Request $request
+     * @return mixed
+     */
     public function updateChurch($id, Request $request)
     {
 
@@ -79,11 +115,17 @@ class Church
 
     }
 
+    /**
+     * @return null
+     */
     public function getUser()
     {
         return ($this->user) ? $this->user : null;
     }
 
+    /**
+     * @param $user
+     */
     public function setUser($user)
     {
         $this->user = $user;
@@ -137,6 +179,12 @@ class Church
         $this->limit = $limit;
     }
 
+    /**
+     * Obtem todas as igrejas
+     * @param null $id
+     * @param null $input
+     * @return array
+     */
     public function getAllChurch($id = null, $input = null)
     {
 
@@ -190,6 +238,13 @@ class Church
 
     }
 
+    /**
+     * Obtem uma unica igreja
+     *
+     * @param $idUser
+     * @param $id
+     * @return array|bool
+     */
     public function getChurch($idUser, $id)
     {
 
@@ -205,6 +260,11 @@ class Church
 
     }
 
+    /**
+     * @param ChurchModel $item
+     * @param int $key
+     * @return \stdClass
+     */
     protected function names(ChurchModel $item, $key = 0)
     {
 
@@ -236,6 +296,10 @@ class Church
 
     }
 
+    /**
+     * @param $array
+     * @return bool
+     */
     protected function userIsChurch($array)
     {
 
@@ -257,6 +321,11 @@ class Church
 
     }
 
+    /**
+     * @param $lat2
+     * @param $lon2
+     * @return null|string
+     */
     protected function distance($lat2, $lon2)
     {
 
@@ -279,12 +348,20 @@ class Church
         return number_format($dist, 2, ',', '');
     }
 
+    /**
+     * @param int $page
+     * @return int
+     */
     protected function calulatePages($page = 1)
     {
         return ($page * $this->getLimit() - $this->getLimit());
 
     }
 
+    /**
+     * @param Collection $dados
+     * @return bool
+     */
     protected function googleDistanceMatrix(Collection $dados)
     {
 
@@ -322,8 +399,13 @@ class Church
 
         }
 
+        return true;
+
     }
 
+    /**
+     * @param Request $request
+     */
     protected function imageManipulationSync(Request $request)
     {
         $file = $request->file('image');
