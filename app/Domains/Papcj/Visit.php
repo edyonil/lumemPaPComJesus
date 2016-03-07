@@ -83,6 +83,7 @@ class Visit
             $this->saveOrUpdateVisit($church->id, $visits);
 
             $newChurchVisit = [
+                'data' => date('Y-m-d H:i:s'),
                 'igreja' => $church
             ];
 

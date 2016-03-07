@@ -98,7 +98,7 @@ class UserBussines
         $newData->email = $user->email;
         $newData->tipo = $user->tipo;
         $newData->igrejasVisitadas = isset($user->igreja_visita) ? $user->igreja_visita : null;
-        $newData->igreja = isset($user->igreja_frequenta) ? $user->igreja_frequenta : null ;
+        $newData->igreja = isset($user->igreja_frequenta) ? $user->igreja_frequenta : null;
 
         return $newData;
 
